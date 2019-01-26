@@ -41,6 +41,7 @@ LINEDATA=0
 RUN_SHAPE_CLUSTERING=0
 EXTRACT_FONT_PROPERTIES=1
 WORKSPACE_DIR=$(mktemp -d)
+GENERATE_DAWGS=1
 
 # set TESSDATA_PREFIX as empty, if not defined in environment to avoid an unbound variable
 TESSDATA_PREFIX=${TESSDATA_PREFIX:-}
@@ -175,6 +176,8 @@ parse_flags() {
             --training_text)
                 parse_value "TRAINING_TEXT" "${ARGV[$j]:-}"
                 i=$j ;;
+            --nogenerate_dawgs)
+                GENERATE_DAWGS=0 ;;
             --wordlist)
                 parse_value "WORDLIST_FILE" ${ARGV[$j]:-}
                 i=$j ;;
@@ -223,7 +226,6 @@ parse_flags() {
     BIGRAM_FREQS_FILE=${TRAINING_TEXT}.bigram_freqs
     UNIGRAM_FREQS_FILE=${TRAINING_TEXT}.unigram_freqs
     TRAIN_NGRAMS_FILE=${TRAINING_TEXT}.train_ngrams
-    GENERATE_DAWGS=1
 }
 
 # Function initializes font config with a unique font cache dir.
@@ -341,7 +343,7 @@ phase_D_generate_dawg() {
 
     # Skip if requested
     if [[ ${GENERATE_DAWGS} -eq 0 ]]; then
-      tlog "Skipping ${phase_name}"
+      tlog "Skipping Phase D"
       return
     fi
 
